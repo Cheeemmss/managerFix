@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wl.mapper.UserRoleMapper">
+
+    <resultMap id="BaseResultMap" type="com.wl.entity.UserRole">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="roleId" column="role_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,role_id
+    </sql>
+<!--    使用DISTINCT来防止查出两个role之间重复的菜单-->
+    <select id="queryMenusByUserId" resultType="com.wl.entity.Menu">
+        SELECT
+            DISTINCT sys_menu.*
+        FROM
+            sys_menu
+                LEFT JOIN sys_role_menu ON sys_menu.id = sys_role_menu.menu_id
+                LEFT JOIN sys_user_role ON sys_role_menu.role_id = sys_user_role.role_id
+                LEFT JOIN sys_user ON sys_user_role.user_id = sys_user.id
+        WHERE
+            sys_user.id = #{userId}
+            AND menu_type = 1
+    </select>
+    <select id="queryRolesNameByUserId" resultType="com.wl.entity.Role">
+        SELECT
+             sys_role.name
+        FROM
+             sys_role
+                 LEFT JOIN sys_user_role ON sys_role.id = sys_user_role.role_id
+        WHERE
+            sys_user_role.user_id = #{userId}
+    </select>
+</mapper>
