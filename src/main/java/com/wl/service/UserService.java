@@ -21,5 +21,7 @@ public interface UserService extends IService<User> {
 
     boolean getUserInfoByName(UserDTO userDTO);
 
+    User getUserInfoByName(String userName);
+
     public List<Menu> getMenusByUserId(Integer userId);
 }

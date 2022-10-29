@@ -74,7 +74,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         //登录成功过后要返回token
         UserDTO userVo = new UserDTO();
         BeanUtils.copyProperties(loginUser,userVo);
-        String token = TokenUtils.generatorToken(loginUser.getId().toString());
+        String token = TokenUtils.generatorToken(loginUser.getId());
         userVo.setToken(token);
         //还要返回菜单树信息以及按钮信息
         userVo.setMenuList(menuService.getMenuTree(user.getId()));
@@ -109,6 +109,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         queryWrapper.eq("username",userDTO.getUsername());
         User user = getOne(queryWrapper);
         return user != null;
+    }
+
+    public User getUserInfoByName(String username) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username",username);
+        User user = getOne(queryWrapper);
+        return user;
     }
 
     /**

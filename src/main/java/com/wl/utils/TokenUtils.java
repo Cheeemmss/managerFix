@@ -24,9 +24,9 @@ public class TokenUtils {
      * @param userId
      * @return
      */
-    public static String generatorToken(String userId){
+    public static String generatorToken(Integer userId){
         String token = JWT.create()
-                .withAudience(userId)   //payload  //自定义用户名
+                .withAudience(userId.toString())   //payload  //自定义用户名
                 .withExpiresAt(DateUtil.offsetHour(new Date(),2)) //指定令牌过期时间 2H
                 .sign(Algorithm.HMAC256(SECRET));   //签名
         return token;

@@ -15,6 +15,8 @@ import com.wl.mapper.UserMapper;
 import com.wl.mapper.UserRoleMapper;
 import com.wl.service.UserService;
 import com.wl.utils.TokenUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

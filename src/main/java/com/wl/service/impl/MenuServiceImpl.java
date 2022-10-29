@@ -91,7 +91,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
     }
 
 
-    //TODO 10.27完成按钮查询(不需要封装为树形结构)
+    //
     public List<Menu> getButtonsByUserId(Integer userId){
         return menuMapper.queryButtonsByUserId(userId);
     }
