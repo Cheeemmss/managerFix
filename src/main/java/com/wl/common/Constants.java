@@ -8,4 +8,5 @@ public interface Constants {
     String CODE_400 = "400";
     String CODE_450 = "450";
     String CODE_501 = "501"; //未注册
+    String CODE_403 = "403"; //无权访问
 }

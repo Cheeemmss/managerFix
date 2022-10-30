@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class CustomMD5PasswordEncode implements PasswordEncoder {
+public class CustomMD5PasswordEncoder implements PasswordEncoder {
 
     //加密盐
     private final String SALT = ")*3aWleQ";

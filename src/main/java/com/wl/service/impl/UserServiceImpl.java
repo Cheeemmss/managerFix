@@ -74,7 +74,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         //登录成功过后要返回token
         UserDTO userVo = new UserDTO();
         BeanUtils.copyProperties(loginUser,userVo);
-        String token = TokenUtils.generatorToken(loginUser.getId());
+        String token = TokenUtils.createToken(loginUser.getId(),loginUser.getUsername());
         userVo.setToken(token);
         //还要返回菜单树信息以及按钮信息
         userVo.setMenuList(menuService.getMenuTree(user.getId()));

@@ -6,6 +6,7 @@ import com.wl.entity.Menu;
 import com.wl.entity.User;
 import com.wl.service.MenuService;
 import com.wl.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 import static com.wl.common.Constants.CODE_501;
 
 @Component
+@Slf4j
 public class UserDetailsServiceImpl implements UserDetailsService{
 
     @Autowired

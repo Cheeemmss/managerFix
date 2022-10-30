@@ -8,16 +8,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wl.common.Constants;
 import com.wl.common.Result;
 import com.wl.controller.dto.UserDTO;
+import com.wl.entity.Menu;
 import com.wl.entity.Role;
 import com.wl.entity.User;
-import com.wl.entity.UserRole;
-import com.wl.mapper.UserMapper;
 import com.wl.mapper.UserRoleMapper;
+import com.wl.service.MenuService;
 import com.wl.service.UserService;
 import com.wl.utils.TokenUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,9 +24,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 
 @RestController
@@ -41,6 +38,10 @@ public class UserController {
 
     @Autowired
     private UserRoleMapper userRoleMapper;
+
+    @Autowired
+    private MenuService menuService;
+
 
     @GetMapping("/page")
     public IPage<User> findPage(Integer pageNo,
@@ -106,6 +107,8 @@ public class UserController {
            userService.impExcel(file);
     }
 
+    //使用了springSecurity该接口中的登录逻辑就没用了
+    @Deprecated
     @PostMapping("/login")
     public Result login(@RequestBody UserDTO userDTO){
         String username = userDTO.getUsername();
@@ -146,6 +149,18 @@ public class UserController {
             return Result.success(user);
         }
         return Result.error(Constants.CODE_400,"请求参数错误");
+    }
+
+    @GetMapping("/user/info")
+    public Result getUserInfoByUserId(HttpServletRequest request){
+        String token = request.getHeader("token");
+        Integer userId = TokenUtils.getUserId(token);
+        List<Menu> menuTree = menuService.getMenuTree(userId);
+        List<Menu> buttons = menuService.getButtonsByUserId(userId);
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("menuTree",menuTree);
+        result.put("buttons",buttons);
+        return Result.success(result);
     }
 
 }

@@ -15,6 +15,8 @@ import com.wl.mapper.RoleMenuMapper;
 import com.wl.mapper.UserRoleMapper;
 import com.wl.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,12 +50,14 @@ public class RoleController {
         return Result.success(rolePage);
     }
 
+    @PreAuthorize("hasAuthority('btn.role.edit')")
     @PostMapping("/save")
     public Result saveUser(@RequestBody Role role){
         boolean saveOrUpdate = roleService.saveOrUpdate(role);
         return Result.success(saveOrUpdate);
     }
 
+    @PreAuthorize("hasAuthority('btn.role.delete')")
     @DeleteMapping("/{id}")
     public Result deleteUser(@PathVariable("id") Integer id){
         boolean remove = roleService.removeById(id);
