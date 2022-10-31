@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.wl.common.Constants.CODE_500;
@@ -87,7 +88,7 @@ public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
         //redis保存权限数据 (用于权限控制)
         Collection<GrantedAuthority> authorities = customUser.getAuthorities();
         List<String> authoritiesList = authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-        redisTemplate.opsForValue().set(customUser.getUsername(), authoritiesList);
+        redisTemplate.opsForValue().set(customUser.getUsername(), authoritiesList,2L, TimeUnit.HOURS);
 
         // (由于前端没有改,登录进去就需要菜单和权限数据返回2,所以这里返回的是UserDTO)
 

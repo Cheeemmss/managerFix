@@ -18,6 +18,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import javax.annotation.Resource;
 import javax.jws.Oneway;
@@ -55,8 +58,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 开启跨域以便前端调用接口
                 .cors().and()
                 .authorizeRequests()
-                // 指定某些接口不需要通过验证即可访问。登陆接口肯定是不需要认证的
-                .antMatchers("/login","/file/**").permitAll()
+                // 指定某些接口不需要通过验证即可访问。登陆接口肯定是不需要认证的,但是还是会通过过滤器
+                .antMatchers("/login").permitAll()
                 // 这里意思是其它所有接口需要认证才能访问
                 .anyRequest().authenticated()
                 .and()
@@ -66,7 +69,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         //禁用session
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
     }
+
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -82,7 +88,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     public void configure(WebSecurity web) throws Exception {
-//        web.ignoring().antMatchers("/favicon.ico","/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**", "/doc.html");
+        //匹配该路径下的请求不需要经过过滤器
+        web.ignoring().antMatchers("/file/**");
+    }
+
+    //若项目中使用了Spring Security，需要单独指定Spring Security跨域
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.addAllowedOriginPattern("*");
+        corsConfiguration.addAllowedHeader("*");
+        corsConfiguration.addAllowedMethod("*");
+        corsConfiguration.setAllowCredentials(true);
+        source.registerCorsConfiguration("/**", corsConfiguration);
+        return new CorsFilter(source);
     }
 
 }

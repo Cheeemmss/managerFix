@@ -42,10 +42,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
-        if("/file".equals(request.getRequestURI()) || "/file/avatar".equals(request.getRequestURI())){
-            chain.doFilter(request,response);
-            return;
-        }
 
         //每次请求都会去获取用户信息和权限信息(根据token从redis中取)
         UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
