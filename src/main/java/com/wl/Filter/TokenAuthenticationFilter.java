@@ -42,11 +42,17 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
+        if("/file".equals(request.getRequestURI()) || "/file/avatar".equals(request.getRequestURI())){
+            chain.doFilter(request,response);
+            return;
+        }
 
+        //每次请求都会去获取用户信息和权限信息(根据token从redis中取)
         UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
         if(null != authentication) {
-            //将用户信息和权限信息保存到ContextHolder中
+            //将用户信息和权限信息保存到ContextHolder中 权限信息可在接口中做权限判断
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            //登录过后,这里放行会去执行目标接口方法
             chain.doFilter(request, response);
         } else {
             ResponseUtil.out(response, Result.error(CODE_401,"无token或token已过期"));

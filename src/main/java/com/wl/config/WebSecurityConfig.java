@@ -3,6 +3,7 @@ package com.wl.config;
 import com.wl.Filter.TokenAuthenticationFilter;
 import com.wl.Filter.TokenLoginFilter;
 import com.wl.custom.CustomMD5PasswordEncoder;
+import com.wl.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.annotation.Resource;
+import javax.jws.Oneway;
 
 @Configuration
 @EnableWebSecurity //@EnableWebSecurity是开启SpringSecurity的默认行为
@@ -32,6 +34,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Resource
     private RedisTemplate<String,Object> redisTemplate;
+
+    @Autowired
+    private MenuService menuService;
+
 
 
     @Bean
@@ -50,13 +56,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().and()
                 .authorizeRequests()
                 // 指定某些接口不需要通过验证即可访问。登陆接口肯定是不需要认证的
-                .antMatchers("/login").permitAll()
+                .antMatchers("/login","/file/**").permitAll()
                 // 这里意思是其它所有接口需要认证才能访问
                 .anyRequest().authenticated()
                 .and()
                 //TokenAuthenticationFilter放到UsernamePasswordAuthenticationFilter的前面，这样做就是为了除了登录的时候去查询数据库外，其他时候都用token进行认证。
                 .addFilterBefore(new TokenAuthenticationFilter(redisTemplate), UsernamePasswordAuthenticationFilter.class)
-                .addFilter(new TokenLoginFilter(authenticationManager(),redisTemplate));
+                .addFilter(new TokenLoginFilter(authenticationManager(),redisTemplate,menuService));
 
         //禁用session
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
